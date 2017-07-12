@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>e949167f-8fe2-4117-9c84-4bf461ebcc92</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dds;dlg;fbx;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="GameFramework">
+      <UniqueIdentifier>{0c13deb6-6fae-48a7-b894-ea48064a22cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{cd8d3757-a57a-4a84-8c7c-a2b5fd184d1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CloverLib">
+      <UniqueIdentifier>{148b733f-dee1-4f77-8085-4ad6fb95f567}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CodingRule">
+      <UniqueIdentifier>{80f72e11-d074-4a34-b1eb-52913174289d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\fbx">
+      <UniqueIdentifier>{b475cef0-d22e-4486-b579-09effe5fd0ca}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="StepTimer.h" />
+    <ClInclude Include="GameFramework\Game.h">
+      <Filter>GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ActionGame.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="CloverLib\Model3D.h">
+      <Filter>CloverLib</Filter>
+    </ClInclude>
+    <ClInclude Include="CloverLib\Camera.h">
+      <Filter>CloverLib</Filter>
+    </ClInclude>
+    <ClInclude Include="CloverLib\InputInterface.h">
+      <Filter>CloverLib</Filter>
+    </ClInclude>
+    <ClInclude Include="CloverLib\MyKeyboard.h">
+      <Filter>CloverLib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="GameFramework\Game.cpp">
+      <Filter>GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ActionGame.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CloverLib\Model3D.cpp">
+      <Filter>CloverLib</Filter>
+    </ClCompile>
+    <ClCompile Include="CloverLib\Camera.cpp">
+      <Filter>CloverLib</Filter>
+    </ClCompile>
+    <ClCompile Include="CloverLib\MyKeyboard.cpp">
+      <Filter>CloverLib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="directx.ico">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest">
+      <Filter>Assets</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="MyProject_CodingRule.txt">
+      <Filter>CodingRule</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="Assets\Skydome.FBX">
+      <Filter>Assets\fbx</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Grass.FBX">
+      <Filter>Assets\fbx</Filter>
+    </MeshContentTask>
+  </ItemGroup>
+</Project>
