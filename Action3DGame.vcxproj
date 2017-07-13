@@ -162,6 +162,7 @@
     <ClInclude Include="CloverLib\MyKeyboard.h" />
     <ClInclude Include="GameFramework\Game.h" />
     <ClInclude Include="Game\ActionGame.h" />
+    <ClInclude Include="Game\Player.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
@@ -171,6 +172,7 @@
     <ClCompile Include="CloverLib\MyKeyboard.cpp" />
     <ClCompile Include="GameFramework\Game.cpp" />
     <ClCompile Include="Game\ActionGame.cpp" />
+    <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -194,6 +196,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <MeshContentTask Include="Assets\Character\Head.FBX">
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Resources\%(Filename).cmo</ContentOutput>
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Resources\%(Filename).cmo</ContentOutput>
+    </MeshContentTask>
     <MeshContentTask Include="Assets\Grass.FBX">
       <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Resources\%(Filename).cmo</ContentOutput>
       <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Resources\%(Filename).cmo</ContentOutput>

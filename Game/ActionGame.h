@@ -10,8 +10,9 @@ Author:Miyu Hara
 /* インクルードファイル */
 #include "../GameFramework/Game.h"
 #include "../CloverLib/Camera.h"
-#include "../CloverLib/Model3D.h"
 #include "../CloverLib/MyKeyboard.h"
+#include "../CloverLib/Model3D.h"
+#include "../Game/Player.h"
 
 /* クラスの定義 */
 class ActionGame : public Game
@@ -33,6 +34,9 @@ private:
 	ActionGame();				// コンストラクタ
 
 	bool InitCamera(int width, int height);		// カメラ初期化
+	
+	void Turn(float angle_radian);
+	void Move(float player_spd,float camera_spd);
 
 private:
 	std::unique_ptr<CloverLib::Camera>         camera_;		// カメラ
@@ -40,7 +44,7 @@ private:
 
 	std::unique_ptr<CloverLib::Model3D> skydome_;
 	std::unique_ptr<CloverLib::Model3D> grass_;
-	// player
+	std::unique_ptr<Player> player_;
 	// enemy
 };
 

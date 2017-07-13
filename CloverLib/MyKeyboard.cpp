@@ -42,4 +42,44 @@ namespace CloverLib
 		// ‰¼ˆ—
 		return this->key_tracker_.IsKeyPressed(Keyboard::D);
 	}
+
+	bool MyKeyboard::IsUp()
+	{
+		return this->key_state_.W;
+	}
+
+	bool MyKeyboard::IsUpDown()
+	{
+		return this->key_tracker_.IsKeyPressed(Keyboard::W);
+	}
+
+	bool MyKeyboard::IsDown()
+	{
+		return this->key_state_.S;
+	}
+
+	bool MyKeyboard::IsDownDown()
+	{
+		return this->key_tracker_.IsKeyPressed(Keyboard::S);
+	}
+
+	bool MyKeyboard::IsControlLeft()
+	{
+		return this->key_state_.Left;
+	}
+
+	bool MyKeyboard::IsControlRight()
+	{
+		return this->key_state_.Right;
+	}
+
+	bool MyKeyboard::IsControlUp()
+	{
+		return this->key_state_.Up;
+	}
+
+	bool MyKeyboard::IsControlDown()
+	{
+		return this->key_state_.Down;
+	}
 }

@@ -50,17 +50,17 @@ void ActionGame::Initialize(HWND window, int width, int height)
 	Game::Initialize(window, width, height);
 
 	// TODO:初期化
-	assert(this->InitCamera(width, height));
-
-	this->input_ = make_unique<MyKeyboard>();
+	this->InitCamera(width, height);
+	this->input_ = make_unique<MyKeyboard>();		// とりあえずキーボードで
 
 	/* モデル初期化 */
 	this->skydome_ = Model3D::Create(L"Resources/Skydome.cmo");
 	this->skydome_->SetLighting(false);
-	this->skydome_->SetTranslation(Vector3::Zero);
 
 	this->grass_ = Model3D::Create(L"Resources/Grass.cmo");
-	this->grass_->SetTranslation(Vector3::Zero);
+
+	this->player_ = make_unique<Player>();
+
 }
 
 /*-----------------------------------------------------
@@ -76,13 +76,17 @@ void ActionGame::Update(DX::StepTimer const & timer)
 	this->input_->Update();
 
 	// 仮処理
-	const float ROTATE_RADIAN = XMConvertToRadians(3.0f);
-	if (this->input_->IsLeft())
-		this->camera_->SetRotateY(ROTATE_RADIAN);
+	const float ROTATE_RADIAN = XMConvertToRadians(2.0f);
+	const float SPEED  = 0.15f;
 
-	if (this->input_->IsRight())
-		this->camera_->SetRotateY(-ROTATE_RADIAN);
+	if (this->input_->IsLeft())		this->Turn(ROTATE_RADIAN);
+	if (this->input_->IsRight())	this->Turn(-ROTATE_RADIAN);
+	if (this->input_->IsUp())		this->Move(-SPEED, -SPEED);
+	if (this->input_->IsDown())		this->Move(SPEED, -SPEED);
+	if (this->input_->IsControlLeft())	this->camera_->RotateY(this->player_->GetPosition(),ROTATE_RADIAN);
+	if (this->input_->IsControlRight())	this->camera_->RotateY(this->player_->GetPosition(),-ROTATE_RADIAN);
 
+	this->player_->Update();
 	this->camera_->Update();
 }
 
@@ -100,6 +104,7 @@ void ActionGame::Render()
 	// TODO:描画
 	this->skydome_->Draw();
 	this->grass_->Draw();
+	this->player_->Draw();
 
 	Present();
 }
@@ -127,9 +132,13 @@ return :成功(true)、失敗(false)
 bool ActionGame::InitCamera(int width, int height)
 {
 	ViewMaterial vm;
-	vm.eye    = Vector3::Up;
-	vm.target = Vector3(0.0f, 0.0f, 5.0f);
+	vm.eye    = Vector3(0.0f, 2.0f, 20.0f);
+	vm.target = Vector3(0.0f, 2.0f, 0.0f);
 	vm.up     = Vector3::Up;
+	// 上から見下ろすカメラにするときは下のコメント外す
+	//vm.eye = Vector3(0.0f, 50.0f, 0.0f);
+	//vm.target = Vector3::Zero;
+	//vm.up = Vector3(0.0f, 0.0f, -1.0f);
 	ProjectionMaterial pm;
 	pm.fov_radians = XMConvertToRadians(60.0f);
 	pm.aspect      = static_cast<float>(width) / height;
@@ -139,4 +148,17 @@ bool ActionGame::InitCamera(int width, int height)
 	this->camera_ = make_unique<Camera>(vm, pm);
 
 	return (this->camera_ ? true : false);
+}
+
+void ActionGame::Turn(float angle_radian)
+{
+	this->player_->Turn(angle_radian);
+}
+
+void ActionGame::Move(float player_spd,float camera_spd)
+{
+	this->player_->Move(player_spd);		// カメラ設定よりも先に処理する
+
+	Vector3 player_dir = this->player_->GetDirection();
+	this->camera_->Move(-player_dir, camera_spd);
 }

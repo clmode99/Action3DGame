@@ -50,8 +50,9 @@ namespace CloverLib
 		void SetVisible(bool is_visible)           { is_visible = is_visible; }					// オブジェクト
 		void SetWireframe(bool is_draw_wireframe)  { is_draw_wireframe = is_draw_wireframe; }	// ワイヤーフレーム
 
-		// ライトの切替
-		void SetLighting(bool is_lighting);
+		// 見た目の調整
+		void SetLighting(bool flag);		// ライトの切替
+		void SetSpecular(bool flag);		// 鏡面反射光の切替
 
 	private:
 		Model3D();		// コンストラクタ

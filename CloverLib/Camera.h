@@ -41,9 +41,15 @@ namespace CloverLib
 
 		void Update();	// XV
 
-		void SetRotateY(float angle_radian);
+		/* ‰ñ“] */
+		void RotateY(const DirectX::SimpleMath::Vector3& pos, float angle_radian);
 
-		/* æ“¾Œn */
+		void Move(const DirectX::SimpleMath::Vector3& dir, float speed);
+
+		/* İ’èEæ“¾Œn */
+		void SetEye(const DirectX::SimpleMath::Vector3& eye)       { this->view_material_.eye = eye; }
+		void SetTarget(const DirectX::SimpleMath::Vector3& target) { this->view_material_.target = target; }
+
 		const DirectX::SimpleMath::Matrix& GetView()       { return this->view_; }
 		const DirectX::SimpleMath::Matrix& GetProjection() { return this->proj_; }
 
@@ -52,8 +58,8 @@ namespace CloverLib
 		DirectX::SimpleMath::Matrix proj_;		// Ë‰es—ñ
 
 		/* Ş—¿ */
-		ViewMaterial       view_material;
-		ProjectionMaterial proj_material;
+		ViewMaterial       view_material_;
+		ProjectionMaterial proj_material_;
 	};
 }
 

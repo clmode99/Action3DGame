@@ -151,7 +151,7 @@ namespace CloverLib
 
 	※参考資料：Obj3D.cpp - Obj3D::DisableLighting()
 	---------------------------------------------------------------*/
-	void Model3D::SetLighting(bool is_lighting)
+	void Model3D::SetLighting(bool flag)
 	{
 		/* メッシュ分のループ */
 		for (auto& mesh : this->model_->meshes)
@@ -171,10 +171,37 @@ namespace CloverLib
 				if (!basic_effect)
 					continue;
 
-				Vector3 emissive_color = (is_lighting ? Vector3::Zero : Vector3::One);		// 発光色
+				Vector3 emissive_color = (flag ? Vector3::Zero : Vector3::One);		// 発光色
 
 				basic_effect->SetEmissiveColor(emissive_color);
-				basic_effect->SetLightEnabled(0, is_lighting);
+				basic_effect->SetLightEnabled(0, flag);
+			}
+		}
+	}
+
+	void Model3D::SetSpecular(bool flag)
+	{
+		/* メッシュ分のループ */
+		for (auto& mesh : this->model_->meshes)
+		{
+			auto model_mesh = mesh.get();
+			assert(model_mesh);
+
+			/* メッシュパーツ分のループ */
+			for (auto& mesh_part : model_mesh->meshParts)
+			{
+				auto model_mesh_part = mesh_part.get();
+				assert(model_mesh_part);
+
+				auto ieffect = model_mesh_part->effect;
+				auto basic_effect = dynamic_cast<BasicEffect*>(ieffect.get());
+
+				if (!basic_effect)
+					continue;
+
+				Vector3 specular_color = (flag ? Vector3::One : Vector3::Zero);		// 鏡面反射光
+
+				basic_effect->SetSpecularColor(specular_color);
 			}
 		}
 	}

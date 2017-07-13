@@ -28,6 +28,15 @@ namespace CloverLib
 		bool IsLeftDown()  override;
 		bool IsRight()     override;
 		bool IsRightDown() override;
+		bool IsUp()	      override;
+		bool IsUpDown()   override;
+		bool IsDown()     override;
+		bool IsDownDown() override;
+
+		bool IsControlLeft()  override;
+		bool IsControlRight() override;
+		bool IsControlUp()   override;
+		bool IsControlDown() override;
 
 	private:
 		std::unique_ptr<DirectX::Keyboard> keyboard_;
