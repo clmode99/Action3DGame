@@ -38,6 +38,8 @@ namespace CloverLib
 		bool IsControlUp()   override;
 		bool IsControlDown() override;
 
+		bool IsJump() override;
+
 	private:
 		std::unique_ptr<DirectX::Keyboard> keyboard_;
 		DirectX::Keyboard::State                key_state_;

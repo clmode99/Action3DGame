@@ -31,20 +31,22 @@ public:
 	std::unique_ptr<CloverLib::Camera>& GetCamera() { return this->camera_; }
 
 private:
-	ActionGame();				// コンストラクタ
+	ActionGame();	// コンストラクタ
 
 	bool InitCamera(int width, int height);		// カメラ初期化
+	void FixCameraHeight();						// カメラの高さを固定する
 	
-	void Turn(float angle_radian);
-	void Move(float player_spd,float camera_spd);
+	void Turn(float angle_radian);					// 旋回
+	void Move(float player_spd,float camera_spd);	// 移動
 
 private:
 	std::unique_ptr<CloverLib::Camera>         camera_;		// カメラ
 	std::unique_ptr<CloverLib::InputInterface> input_;		// 入力装置
 
-	std::unique_ptr<CloverLib::Model3D> skydome_;
-	std::unique_ptr<CloverLib::Model3D> grass_;
-	std::unique_ptr<Player> player_;
+	std::unique_ptr<CloverLib::Model3D> skydome_;	// 天球
+	std::unique_ptr<CloverLib::Model3D> ground_;	// 地面
+
+	std::unique_ptr<Player> player_;	// プレイヤー
 	// enemy
 };
 

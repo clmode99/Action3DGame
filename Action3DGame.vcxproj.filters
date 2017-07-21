@@ -48,6 +48,12 @@
     <ClInclude Include="Game\Player.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="CloverLib\TmpCommon.h">
+      <Filter>CloverLib</Filter>
+    </ClInclude>
+    <ClInclude Include="CloverLib\TmpCommonPrivate.h">
+      <Filter>CloverLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -97,6 +103,18 @@
       <Filter>Assets\fbx</Filter>
     </MeshContentTask>
     <MeshContentTask Include="Assets\Character\Head.FBX">
+      <Filter>Assets\fbx\Character</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Character\Body.FBX">
+      <Filter>Assets\fbx\Character</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Character\Foot.FBX">
+      <Filter>Assets\fbx\Character</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Character\Leg.FBX">
+      <Filter>Assets\fbx\Character</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Character\Arm.FBX">
       <Filter>Assets\fbx\Character</Filter>
     </MeshContentTask>
   </ItemGroup>

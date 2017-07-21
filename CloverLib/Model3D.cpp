@@ -13,6 +13,9 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 using namespace std;
 
+/* 静的メンバ変数の定義 */
+map<const wchar_t*, shared_ptr<Model>> CloverLib::Model3D::model_map_;
+
 /* メンバ変数の定義 */
 namespace CloverLib
 {
@@ -21,7 +24,7 @@ namespace CloverLib
 
 	summary:生成する
 	param  :読み込むファイル名(const wchar_t*)、表示するか(bool)
-	return :スプライト(unique_ptr<CloverLib::Model3D>)
+	return :モデル(unique_ptr<CloverLib::Model3D>)
 	---------------------------------------------------------------*/
 	unique_ptr<Model3D> Model3D::Create(const wchar_t * file_name, bool is_visible)
 	{
@@ -51,7 +54,16 @@ namespace CloverLib
 	---------------------------------------------------------------*/
 	void Model3D::LoadModelCMO(const wchar_t* file_name)
 	{
-		this->model_ = Model::CreateFromCMO(this->device_.Get(), file_name, *(this->effect_));
+		/* 既に同じ場所にある同じファイルは使い回す */
+		auto data = this->model_map_.find(file_name);
+		
+		if (data != this->model_map_.end())			// 同じファイルが見つかった
+			this->model_ = data->second;
+		else
+		{
+			this->model_ = Model::CreateFromCMO(this->device_.Get(), file_name, *(this->effect_));
+			this->model_map_.insert(std::make_pair(file_name, this->model_));
+		}
 	}
 
 	/*---------------------------------------------------------------
@@ -63,17 +75,31 @@ namespace CloverLib
 	---------------------------------------------------------------*/
 	void Model3D::Draw()
 	{
+		this->CalcWorldMatrix();
+
 		if (!(this->is_visible_))
 			return;
 
-		/* 行列計算 */
-		Matrix rotate = Matrix::CreateFromQuaternion(this->rotate_);
-		Matrix world = this->scale_ * rotate * this->trans_;
-
-		/* 描画 */
 		this->model_->Draw(this->context_.Get(), *(this->states_),
-							world, this->camera_->GetView(), this->camera_->GetProjection(),
+							this->world_, this->camera_->GetView(), this->camera_->GetProjection(),
 							this->is_draw_wireframe_);
+
+		/* 子の描画 */
+		for (auto& v : this->children_)
+			v->Draw();
+	}
+
+	/*---------------------------------------------------------------
+	AddChild
+
+	summary:子を追加
+	param  :子(Model3D*)
+	return :なし(void)
+	---------------------------------------------------------------*/
+	void Model3D::AddChild(Model3D* child)
+	{
+		this->children_.push_back(child);
+		child->SetParent(this);
 	}
 
 	/*---------------------------------------------------------------
@@ -106,18 +132,6 @@ namespace CloverLib
 	}
 
 	/*---------------------------------------------------------------
-	SetRotateYPR
-
-	summary:回転(ヨー・ピッチ・ロール版)
-	param  :ヨー(float)、ピッチ(float)、ロール(float)
-	return :なし(void)
-	---------------------------------------------------------------*/
-	void Model3D::SetRotateYPR(float yaw, float pitch, float roll)
-	{
-		this->rotate_ = Quaternion::CreateFromYawPitchRoll(yaw, pitch, roll);
-	}
-
-	/*---------------------------------------------------------------
 	SetTranslation
 
 	summary:移動(float版)
@@ -140,6 +154,110 @@ namespace CloverLib
 	void Model3D::SetTranslation(const Vector3& trans)
 	{
 		this->trans_ = Matrix::CreateTranslation(trans);
+	}
+
+	/*---------------------------------------------------------------
+	GetTranslation
+
+	summary:移動量の取得
+	param  :なし(void)
+	return :移動量(const DirectX::SimpleMath::Vector3&)
+	---------------------------------------------------------------*/
+	const Vector3& Model3D::GetTranslation()
+	{
+		/* 行列からベクトルの値を取り出す */
+		this->trans_vec_.x = this->trans_._41;
+		this->trans_vec_.y = this->trans_._42;
+		this->trans_vec_.z = this->trans_._43;
+
+		return this->trans_vec_;
+	}
+
+	/*---------------------------------------------------------------
+	SetOffset
+
+	summary:オフセット設定
+	param  :オフセット(const DirectX::SimpleMath::Vector3&)
+	return :なし(void)
+	---------------------------------------------------------------*/
+	void Model3D::SetOffset(const Vector3& offset)
+	{
+		this->offset_ = offset;
+		this->SetTranslation(this->trans_vec_ + this->offset_);
+	}
+
+	/*---------------------------------------------------------------
+	SetDiffuseColor
+
+	summary:拡散反射光の設定
+	param  :色(RGB:0.0f～1.0f)(const DirectX::SimpleMath::Vector3&)
+	return :なし(void)
+	---------------------------------------------------------------*/
+	void Model3D::SetDiffuseColor(const Vector3& color)
+	{
+		/* メッシュ分のループ */
+		for (auto& mesh : this->model_->meshes)
+		{
+			auto model_mesh = mesh.get();
+			assert(model_mesh);
+
+			/* メッシュパーツ分のループ */
+			for (auto& mesh_part : model_mesh->meshParts)
+			{
+				auto model_mesh_part = mesh_part.get();
+				assert(model_mesh_part);
+
+				auto ieffect = model_mesh_part->effect;
+				auto basic_effect = dynamic_cast<BasicEffect*>(ieffect.get());
+
+				if (!basic_effect)
+					continue;
+
+				basic_effect->SetDiffuseColor(color);
+			}
+		}
+
+		/* 子の設定 */
+		for (auto& v : this->children_)
+			v->SetDiffuseColor(color);
+	}
+
+	/*---------------------------------------------------------------
+	SetSpecular
+
+	summary:鏡面反射光の切替
+	param  :オンオフ(bool)
+	return :なし(void)
+	---------------------------------------------------------------*/
+	void Model3D::SetSpecular(bool flag)
+	{
+		/* メッシュ分のループ */
+		for (auto& mesh : this->model_->meshes)
+		{
+			auto model_mesh = mesh.get();
+			assert(model_mesh);
+
+			/* メッシュパーツ分のループ */
+			for (auto& mesh_part : model_mesh->meshParts)
+			{
+				auto model_mesh_part = mesh_part.get();
+				assert(model_mesh_part);
+
+				auto ieffect = model_mesh_part->effect;
+				auto basic_effect = dynamic_cast<BasicEffect*>(ieffect.get());
+
+				if (!basic_effect)
+					continue;
+
+				Vector3 specular_color = (flag ? Vector3::One : Vector3::Zero);		// 鏡面反射光
+
+				basic_effect->SetSpecularColor(specular_color);
+			}
+		}
+
+		/* 子の設定 */
+		for (auto& v : this->children_)
+			v->SetSpecular(flag);
 	}
 
 	/*---------------------------------------------------------------
@@ -177,33 +295,10 @@ namespace CloverLib
 				basic_effect->SetLightEnabled(0, flag);
 			}
 		}
-	}
 
-	void Model3D::SetSpecular(bool flag)
-	{
-		/* メッシュ分のループ */
-		for (auto& mesh : this->model_->meshes)
-		{
-			auto model_mesh = mesh.get();
-			assert(model_mesh);
-
-			/* メッシュパーツ分のループ */
-			for (auto& mesh_part : model_mesh->meshParts)
-			{
-				auto model_mesh_part = mesh_part.get();
-				assert(model_mesh_part);
-
-				auto ieffect = model_mesh_part->effect;
-				auto basic_effect = dynamic_cast<BasicEffect*>(ieffect.get());
-
-				if (!basic_effect)
-					continue;
-
-				Vector3 specular_color = (flag ? Vector3::One : Vector3::Zero);		// 鏡面反射光
-
-				basic_effect->SetSpecularColor(specular_color);
-			}
-		}
+		/* 子の設定 */
+		for (auto& v : this->children_)
+			v->SetLighting(flag);
 	}
 
 	/*---------------------------------------------------------------
@@ -218,11 +313,28 @@ namespace CloverLib
 		 context_(ActionGame::GetInstance()->GetContext()),
 		 camera_(ActionGame::GetInstance()->GetCamera()),
 		 model_(nullptr),
+		 parent_(nullptr),
 		 is_visible_(true),
 		 is_draw_wireframe_(false)
 	{
 		this->effect_ = make_unique<EffectFactory>(this->device_.Get());
 		this->effect_->SetDirectory(L"Resources");
 		this->states_ = make_unique<CommonStates>(this->device_.Get());
+	}
+
+	/*---------------------------------------------------------------
+	CalcWorldMatrix
+
+	summary:ワールド行列計算
+	param  :なし(void)
+	return :なし(void)
+	---------------------------------------------------------------*/
+	void Model3D::CalcWorldMatrix()
+	{
+		Matrix rotate = Matrix::CreateFromQuaternion(this->rotate_);
+		this->world_ = this->scale_ * rotate * this->trans_;
+
+		if (this->parent_)		// 親がいるなら
+			this->world_ *= this->parent_->world_;
 	}
 }

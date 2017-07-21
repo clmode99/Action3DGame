@@ -41,10 +41,9 @@ namespace CloverLib
 
 		void Update();	// XV
 
-		/* ‰ñ“] */
-		void RotateY(const DirectX::SimpleMath::Vector3& pos, float angle_radian);
+		void RotateY(const DirectX::SimpleMath::Vector3& pos, float angle_radian);		// YŽ²‚É‰ñ“]
 
-		void Move(const DirectX::SimpleMath::Vector3& dir, float speed);
+		void Move(const DirectX::SimpleMath::Vector3& dir, float speed);		// ˆÚ“®
 
 		/* Ý’èEŽæ“¾Œn */
 		void SetEye(const DirectX::SimpleMath::Vector3& eye)       { this->view_material_.eye = eye; }

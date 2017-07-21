@@ -8,6 +8,8 @@ Author:Miyu Hara
 #pragma once
 
 /* インクルードファイル */
+#include <list>
+#include <map>
 #include <memory>
 #include <wrl\client.h>
 
@@ -33,6 +35,8 @@ namespace CloverLib
 
 		void Draw();		// 描画
 
+		void AddChild(Model3D* child);								// 子を追加
+
 		/* 各種設定・取得 */
 		// 拡大縮小
 		void SetScale(float scale) { scale_ = DirectX::SimpleMath::Matrix::CreateScale(scale); }
@@ -40,23 +44,31 @@ namespace CloverLib
 		// 回転
 		void SetRotate(float x, float y, float z);						// float版
 		void SetRotate(const DirectX::SimpleMath::Matrix& rotate);		// Matrix版
-		void SetRotateYPR(float yaw, float pitch, float roll);			// ヨー・ピッチ・ロール版
 
 		// 座標
 		void SetTranslation(float x, float y, float z);						// float版
 		void SetTranslation(const DirectX::SimpleMath::Vector3& trans);		// Vector3版
+		const DirectX::SimpleMath::Vector3& GetTranslation();
+		void SetOffset(const DirectX::SimpleMath::Vector3& offset);
 
 		// 表示
 		void SetVisible(bool is_visible)           { is_visible = is_visible; }					// オブジェクト
 		void SetWireframe(bool is_draw_wireframe)  { is_draw_wireframe = is_draw_wireframe; }	// ワイヤーフレーム
 
 		// 見た目の調整
-		void SetLighting(bool flag);		// ライトの切替
-		void SetSpecular(bool flag);		// 鏡面反射光の切替
+		void SetDiffuseColor(const DirectX::SimpleMath::Vector3& color);	// 拡散反射光の設定
+		void SetSpecular(bool flag);										// 鏡面反射光の切替
+		void SetLighting(bool flag);										// ライトの切替
 
 	private:
 		Model3D();		// コンストラクタ
+		
+		void CalcWorldMatrix();			// ワールド行列計算
+		void SetParent(Model3D* parent) { this->parent_ = parent; }	// 親を設定
 
+	private:
+		static std::map<const wchar_t*, std::shared_ptr<DirectX::Model>> model_map_;	// モデルマップ
+	
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Device>&        device_;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context_;
@@ -64,11 +76,18 @@ namespace CloverLib
 		std::unique_ptr<DirectX::CommonStates>       states_;
 		std::unique_ptr<Camera>&                     camera_;
 
-		std::unique_ptr<DirectX::Model> model_;		// モデル
+		std::shared_ptr<DirectX::Model>     model_;			// モデル
+
+		Model3D* parent_;					// 親
+		std::list<Model3D*> children_;		// 子
 
 		DirectX::SimpleMath::Matrix     scale_;		// 拡大縮小率
 		DirectX::SimpleMath::Quaternion rotate_;	// 回転
-		DirectX::SimpleMath::Matrix     trans_;		// 座標
+		DirectX::SimpleMath::Matrix     trans_;		// 座標(Matrix版)
+		DirectX::SimpleMath::Vector3    trans_vec_;	// 座標(Vector版)
+		DirectX::SimpleMath::Matrix     world_;		// ワールド座標
+
+		DirectX::SimpleMath::Vector3 offset_;		// オフセット
 
 		bool is_visible_;			// モデルを表示するか
 		bool is_draw_wireframe_;	// ワイヤーフレームを表示するか

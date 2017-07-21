@@ -28,5 +28,7 @@ namespace CloverLib
 		virtual bool IsControlRight() = 0;
 		virtual bool IsControlUp()   = 0;
 		virtual bool IsControlDown() = 0;
+
+		virtual bool IsJump() = 0;
 	};
 }

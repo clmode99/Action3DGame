@@ -2,6 +2,7 @@
 // Main.cpp
 //
 
+#include <crtdbg.h>
 #include "pch.h"
 #include "Game\ActionGame.h"
 
@@ -21,6 +22,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
+
+	/* ÉÅÉÇÉäÉäÅ[ÉNåüèo */
+	::_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
     if (!XMVerifyCPUSupport())
         return 1;

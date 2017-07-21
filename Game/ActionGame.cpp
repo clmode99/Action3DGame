@@ -23,8 +23,8 @@ return :インスタンス(std::unique_ptr<Game>&)
 -----------------------------------------------------*/
 unique_ptr<ActionGame>& ActionGame::GetInstance()
 {
-	static unique_ptr<ActionGame> instance(new ActionGame());
-	return instance;
+	static unique_ptr<ActionGame> s_instance(new ActionGame());
+	return s_instance;
 }
 
 /*-----------------------------------------------------
@@ -35,8 +35,7 @@ param  :存在しない
 return :存在しない
 -----------------------------------------------------*/
 ActionGame::~ActionGame()
-{
-}
+{}
 
 /*-----------------------------------------------------
 Initialize
@@ -57,10 +56,10 @@ void ActionGame::Initialize(HWND window, int width, int height)
 	this->skydome_ = Model3D::Create(L"Resources/Skydome.cmo");
 	this->skydome_->SetLighting(false);
 
-	this->grass_ = Model3D::Create(L"Resources/Grass.cmo");
+	this->ground_ = Model3D::Create(L"Resources/Grass.cmo");
 
 	this->player_ = make_unique<Player>();
-
+	this->player_->SetColor(Vector3(0x33, 0x99, 0xff));
 }
 
 /*-----------------------------------------------------
@@ -73,18 +72,26 @@ return :なし(void)
 void ActionGame::Update(DX::StepTimer const & timer)
 {
 	// TODO:更新
-	this->input_->Update();
+	this->player_->ResetMove();
 
-	// 仮処理
-	const float ROTATE_RADIAN = XMConvertToRadians(2.0f);
-	const float SPEED  = 0.15f;
+	// 入力処理
+	const auto ROTATE_RADIAN = XMConvertToRadians(2.0f);
+	const auto SPEED         = 0.3f;
+	const auto JUMP_SPEED    = 2.0f;
+
+	this->input_->Update();
 
 	if (this->input_->IsLeft())		this->Turn(ROTATE_RADIAN);
 	if (this->input_->IsRight())	this->Turn(-ROTATE_RADIAN);
 	if (this->input_->IsUp())		this->Move(-SPEED, -SPEED);
 	if (this->input_->IsDown())		this->Move(SPEED, -SPEED);
+	
 	if (this->input_->IsControlLeft())	this->camera_->RotateY(this->player_->GetPosition(),ROTATE_RADIAN);
 	if (this->input_->IsControlRight())	this->camera_->RotateY(this->player_->GetPosition(),-ROTATE_RADIAN);
+	
+	if (this->input_->IsJump() && !this->player_->IsJump())		this->player_->Jump(JUMP_SPEED);
+
+	this->FixCameraHeight();
 
 	this->player_->Update();
 	this->camera_->Update();
@@ -103,8 +110,8 @@ void ActionGame::Render()
 
 	// TODO:描画
 	this->skydome_->Draw();
-	this->grass_->Draw();
-	this->player_->Draw();
+	this->ground_  ->Draw();
+	this->player_ ->Draw();
 
 	Present();
 }
@@ -132,32 +139,60 @@ return :成功(true)、失敗(false)
 bool ActionGame::InitCamera(int width, int height)
 {
 	ViewMaterial vm;
-	vm.eye    = Vector3(0.0f, 2.0f, 20.0f);
-	vm.target = Vector3(0.0f, 2.0f, 0.0f);
+	vm.eye    = Vector3(0.0f, 3.0f, 30.0f);
+	vm.target = Vector3(0.0f, 3.0f, 0.0f);		// Player.h - FIRST_POSITIONと同じ(なんとかしたい)
 	vm.up     = Vector3::Up;
-	// 上から見下ろすカメラにするときは下のコメント外す
-	//vm.eye = Vector3(0.0f, 50.0f, 0.0f);
+	/* 上から見下ろすカメラにするときは下のコメント外す */
+	//vm.eye    = Vector3(0.0f, 50.0f, 0.0f);
 	//vm.target = Vector3::Zero;
-	//vm.up = Vector3(0.0f, 0.0f, -1.0f);
+	//vm.up     = Vector3(0.0f, 0.0f, -1.0f);
 	ProjectionMaterial pm;
 	pm.fov_radians = XMConvertToRadians(60.0f);
 	pm.aspect      = static_cast<float>(width) / height;
 	pm.near_clip   = 0.1f;
-	pm.far_clip    = 500.0f;
+	pm.far_clip    = 250.0f;
 
 	this->camera_ = make_unique<Camera>(vm, pm);
 
 	return (this->camera_ ? true : false);
 }
 
+/*-----------------------------------------------------
+FixCameraHeight
+
+summary:カメラの高さを固定
+param  :なし(void)
+return :なし(void)
+-----------------------------------------------------*/
+void ActionGame::FixCameraHeight()
+{
+	Vector3 player_pos = this->player_->GetPosition();
+	player_pos.y = 3.0f;			// カメラの高さ
+	this->camera_->RotateY(player_pos, 0.0f);
+}
+
+/*-----------------------------------------------------
+Turn
+
+summary:旋回
+param  :旋回する角度(float)
+return :なし(void)
+-----------------------------------------------------*/
 void ActionGame::Turn(float angle_radian)
 {
 	this->player_->Turn(angle_radian);
 }
 
+/*-----------------------------------------------------
+Move
+
+summary:移動
+param  :プレイヤーの速さ(float)、カメラの速さ(float)
+return :なし(void)
+-----------------------------------------------------*/
 void ActionGame::Move(float player_spd,float camera_spd)
 {
-	this->player_->Move(player_spd);		// カメラ設定よりも先に処理する
+	this->player_->Move(player_spd);		// ※カメラ設定よりも先に処理する
 
 	Vector3 player_dir = this->player_->GetDirection();
 	this->camera_->Move(-player_dir, camera_spd);

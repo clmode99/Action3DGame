@@ -57,7 +57,7 @@ namespace CloverLib
 	/*----------------------------------------------------------
 	RotateY
 
-	summary:Y軸の回転
+	summary:Y軸回転
 	param  :位置(const DirectX::SimpleMath&)、回転角度(float)
 	return :なし(void)
 
@@ -67,12 +67,12 @@ namespace CloverLib
 	{
 		Vector3 eye, target;
 
-		target = pos + Vector3(0.0f, 2.0f, 0.0f);
-		Vector3 camera(0.0f, 0.0f, 20.0f);			// カメラと位置との距離
+		target = pos;
+		Vector3 camera(0.0f, 0.0f, 30.0f);			// カメラと位置との距離
 
-		static float angle = 0.0f;
-		angle += angle_radian;
-		Matrix rotate = Matrix::CreateRotationY(angle);
+		static float s_angle = 0.0f;
+		s_angle += angle_radian;
+		Matrix rotate = Matrix::CreateRotationY(s_angle);
 		camera = Vector3::TransformNormal(camera, rotate);
 
 		eye = target + camera;
