@@ -54,6 +54,24 @@
     <ClInclude Include="CloverLib\TmpCommonPrivate.h">
       <Filter>CloverLib</Filter>
     </ClInclude>
+    <ClInclude Include="CloverLib\CollisionSphere.h">
+      <Filter>CloverLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="CloverLib\MyGamePad.h">
+      <Filter>CloverLib</Filter>
+    </ClInclude>
+    <ClInclude Include="CloverLib\CollisionCapsule.h">
+      <Filter>CloverLib</Filter>
+    </ClInclude>
+    <ClInclude Include="CloverLib\Font.h">
+      <Filter>CloverLib</Filter>
+    </ClInclude>
+    <ClInclude Include="CloverLib\Sprite2D.h">
+      <Filter>CloverLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -75,6 +93,24 @@
     </ClCompile>
     <ClCompile Include="Game\Player.cpp">
       <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CloverLib\CollisionSphere.cpp">
+      <Filter>CloverLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CloverLib\MyGamePad.cpp">
+      <Filter>CloverLib</Filter>
+    </ClCompile>
+    <ClCompile Include="CloverLib\CollisionCapsule.cpp">
+      <Filter>CloverLib</Filter>
+    </ClCompile>
+    <ClCompile Include="CloverLib\Font.cpp">
+      <Filter>CloverLib</Filter>
+    </ClCompile>
+    <ClCompile Include="CloverLib\Sprite2D.cpp">
+      <Filter>CloverLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -99,9 +135,6 @@
     <MeshContentTask Include="Assets\Skydome.FBX">
       <Filter>Assets\fbx</Filter>
     </MeshContentTask>
-    <MeshContentTask Include="Assets\Grass.FBX">
-      <Filter>Assets\fbx</Filter>
-    </MeshContentTask>
     <MeshContentTask Include="Assets\Character\Head.FBX">
       <Filter>Assets\fbx\Character</Filter>
     </MeshContentTask>
@@ -116,6 +149,15 @@
     </MeshContentTask>
     <MeshContentTask Include="Assets\Character\Arm.FBX">
       <Filter>Assets\fbx\Character</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Grass.FBX">
+      <Filter>Assets\fbx</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Character\Shadow.FBX">
+      <Filter>Assets\fbx\Character</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\EnemySphere.FBX">
+      <Filter>Assets\fbx</Filter>
     </MeshContentTask>
   </ItemGroup>
 </Project>

@@ -157,23 +157,35 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CloverLib\Camera.h" />
+    <ClInclude Include="CloverLib\CollisionCapsule.h" />
+    <ClInclude Include="CloverLib\CollisionSphere.h" />
+    <ClInclude Include="CloverLib\Font.h" />
     <ClInclude Include="CloverLib\InputInterface.h" />
     <ClInclude Include="CloverLib\Model3D.h" />
+    <ClInclude Include="CloverLib\MyGamePad.h" />
     <ClInclude Include="CloverLib\MyKeyboard.h" />
+    <ClInclude Include="CloverLib\Sprite2D.h" />
     <ClInclude Include="CloverLib\TmpCommon.h" />
     <ClInclude Include="CloverLib\TmpCommonPrivate.h" />
     <ClInclude Include="GameFramework\Game.h" />
     <ClInclude Include="Game\ActionGame.h" />
+    <ClInclude Include="Game\Enemy.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CloverLib\Camera.cpp" />
+    <ClCompile Include="CloverLib\CollisionCapsule.cpp" />
+    <ClCompile Include="CloverLib\CollisionSphere.cpp" />
+    <ClCompile Include="CloverLib\Font.cpp" />
     <ClCompile Include="CloverLib\Model3D.cpp" />
+    <ClCompile Include="CloverLib\MyGamePad.cpp" />
     <ClCompile Include="CloverLib\MyKeyboard.cpp" />
+    <ClCompile Include="CloverLib\Sprite2D.cpp" />
     <ClCompile Include="GameFramework\Game.cpp" />
     <ClCompile Include="Game\ActionGame.cpp" />
+    <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
@@ -215,6 +227,14 @@
       <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Resources\%(Filename).cmo</ContentOutput>
     </MeshContentTask>
     <MeshContentTask Include="Assets\Character\Leg.FBX">
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Resources\%(Filename).cmo</ContentOutput>
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Resources\%(Filename).cmo</ContentOutput>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Character\Shadow.FBX">
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Resources\%(Filename).cmo</ContentOutput>
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Resources\%(Filename).cmo</ContentOutput>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\EnemySphere.FBX">
       <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Resources\%(Filename).cmo</ContentOutput>
       <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Resources\%(Filename).cmo</ContentOutput>
     </MeshContentTask>

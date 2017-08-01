@@ -4,7 +4,7 @@
 
 #include <crtdbg.h>
 #include "pch.h"
-#include "Game\ActionGame.h"
+#include "Game/ActionGame.h"
 
 using namespace DirectX;
 
@@ -251,6 +251,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 	case WM_SYSKEYUP:
 		Keyboard::ProcessMessage(message, wParam, lParam);
+		break;
+
+	case WM_CHAR:
+		if (wParam == 0x1B)			// 0x1B:ESCÉLÅ[
+			PostQuitMessage(0);
 		break;
 
     case WM_MENUCHAR:

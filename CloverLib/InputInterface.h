@@ -13,7 +13,8 @@ namespace CloverLib
 	class InputInterface
 	{
 	public:
-		virtual void Update() = 0;
+		virtual void Update()      = 0;
+		virtual bool IsConnected() = 0;
 
 		virtual bool IsLeft()     = 0;
 		virtual bool IsLeftDown() = 0;
@@ -30,5 +31,7 @@ namespace CloverLib
 		virtual bool IsControlDown() = 0;
 
 		virtual bool IsJump() = 0;
+
+		virtual bool IsDebug() = 0;
 	};
 }

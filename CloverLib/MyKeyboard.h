@@ -19,10 +19,13 @@ namespace CloverLib
 	class MyKeyboard : public InputInterface
 	{
 	public:
-		MyKeyboard();
+		static std::shared_ptr<InputInterface>& GetInstance();
+
+	public:
 		virtual ~MyKeyboard();
 
-		void Update()     override;
+		void Update()      override;
+		bool IsConnected() override;
 
 		bool IsLeft()      override;
 		bool IsLeftDown()  override;
@@ -39,6 +42,11 @@ namespace CloverLib
 		bool IsControlDown() override;
 
 		bool IsJump() override;
+
+		bool IsDebug() override;
+
+	private:
+		MyKeyboard();
 
 	private:
 		std::unique_ptr<DirectX::Keyboard> keyboard_;

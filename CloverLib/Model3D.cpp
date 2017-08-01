@@ -73,20 +73,48 @@ namespace CloverLib
 	param  :なし(void)
 	return :なし(void)
 	---------------------------------------------------------------*/
-	void Model3D::Draw()
+	void Model3D::Draw(STATE state)
 	{
 		this->CalcWorldMatrix();
 
 		if (!(this->is_visible_))
 			return;
 
-		this->model_->Draw(this->context_.Get(), *(this->states_),
-							this->world_, this->camera_->GetView(), this->camera_->GetProjection(),
-							this->is_draw_wireframe_);
+		function<void()> state_func;
 
-		/* 子の描画 */
-		for (auto& v : this->children_)
-			v->Draw();
+		switch (state)
+		{
+		/* 普通 */
+		case STATE::NORMAL:
+			this->Draw(state_func);
+
+			/* 子の描画 */
+			for (auto& v : this->children_)
+				v->Draw();
+			break;
+
+		/* 加算 */
+		case STATE::ADD:
+			state_func = [&] {this->context_->OMSetBlendState(this->add_state_.Get(), nullptr, 0xffffff); };
+
+			this->Draw(state_func);
+
+			/* 子の描画 */
+			for (auto& v : this->children_)
+				v->Draw(STATE::ADD);
+			break;
+
+		/* 減算 */
+		case STATE::SUBTRACT:
+			state_func = [&] {this->context_->OMSetBlendState(this->subtract_state_.Get(), nullptr, 0xffffff); };
+
+			this->Draw(state_func);
+
+			/* 子の描画 */
+			for (auto& v : this->children_)
+				v->Draw(STATE::SUBTRACT);
+			break;
+		}
 	}
 
 	/*---------------------------------------------------------------
@@ -306,7 +334,7 @@ namespace CloverLib
 
 	summary:コンストラクタ
 	param  :なし(void)
-	return :なし(void)
+	return :存在しない
 	---------------------------------------------------------------*/
 	Model3D::Model3D()
 		:device_(ActionGame::GetInstance()->GetDevice()),
@@ -320,6 +348,63 @@ namespace CloverLib
 		this->effect_ = make_unique<EffectFactory>(this->device_.Get());
 		this->effect_->SetDirectory(L"Resources");
 		this->states_ = make_unique<CommonStates>(this->device_.Get());
+
+		this->CreateState();
+	}
+
+	/*---------------------------------------------------------------
+	Draw
+
+	summary:描画(private版)
+	param  :ステート(const std::function<void()>&)
+	return :なし(void)
+	---------------------------------------------------------------*/
+	void Model3D::Draw(const function<void()>& state)
+	{
+		this->model_->Draw(this->context_.Get(), *(this->states_),
+			this->world_, this->camera_->GetView(), this->camera_->GetProjection(),
+			this->is_draw_wireframe_, state);
+	}
+
+	/*---------------------------------------------------------------
+	CreateState
+
+	summary:各ステート作成
+	param  :なし(void)
+	return :なし(void)
+	---------------------------------------------------------------*/
+	void Model3D::CreateState()
+	{
+		D3D11_BLEND_DESC desc;
+		ZeroMemory(&desc, sizeof(D3D11_BLEND_DESC));
+
+		/* 加算 */
+		desc.AlphaToCoverageEnable       = false;
+		desc.IndependentBlendEnable      = false;
+		desc.RenderTarget[0].BlendEnable = true;
+		desc.RenderTarget[0].SrcBlend  = D3D11_BLEND_ONE;
+		desc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+		desc.RenderTarget[0].BlendOp   = D3D11_BLEND_OP_ADD;
+		desc.RenderTarget[0].SrcBlendAlpha  = D3D11_BLEND_ONE;
+		desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+		desc.RenderTarget[0].BlendOpAlpha   = D3D11_BLEND_OP_ADD;
+		desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		this->device_->CreateBlendState(&desc, this->add_state_.GetAddressOf());
+
+		/* 減算 */
+		desc.AlphaToCoverageEnable       = false;
+		desc.IndependentBlendEnable      = false;
+		desc.RenderTarget[0].BlendEnable = true;
+		desc.RenderTarget[0].SrcBlend  = D3D11_BLEND_ONE;
+		desc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+		desc.RenderTarget[0].BlendOp   = D3D11_BLEND_OP_REV_SUBTRACT;
+		desc.RenderTarget[0].SrcBlendAlpha  = D3D11_BLEND_ONE;
+		desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+		desc.RenderTarget[0].BlendOpAlpha   = D3D11_BLEND_OP_REV_SUBTRACT;
+		desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		this->device_->CreateBlendState(&desc, this->subtract_state_.GetAddressOf());
 	}
 
 	/*---------------------------------------------------------------

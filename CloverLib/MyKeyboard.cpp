@@ -15,15 +15,17 @@ using namespace std;
 namespace CloverLib
 {
 	/*---------------------------------------------------------------
-	MyKeyboard
+	GetInstance
 
-	summary:コンストラクタ
+	summary:インスタンス取得
 	param  :なし(void)
-	return :存在しない
+	return :インスタンス(std::unique_ptr<InputInterface>&)
 	---------------------------------------------------------------*/
-	MyKeyboard::MyKeyboard()
-		:keyboard_(make_unique<Keyboard>())
-	{}
+	shared_ptr<InputInterface>& MyKeyboard::GetInstance()
+	{
+		static shared_ptr<InputInterface> s_instance(new MyKeyboard());
+		return s_instance;
+	}
 
 	/*---------------------------------------------------------------
 	~MyKeyboard
@@ -46,6 +48,18 @@ namespace CloverLib
 	{
 		this->key_state_ = this->keyboard_->GetState();
 		this->key_tracker_.Update(this->key_state_);
+	}
+
+	/*---------------------------------------------------------------
+	IsConnected
+
+	summary:接続されているか
+	param  :なし(void)
+	return :接続(true)、未接続(false)
+	---------------------------------------------------------------*/
+	bool MyKeyboard::IsConnected()
+	{
+		return true;	// 常に接続されている
 	}
 
 	/*---------------------------------------------------------------
@@ -206,5 +220,30 @@ namespace CloverLib
 	bool MyKeyboard::IsJump()
 	{
 		return this->key_tracker_.IsKeyPressed(Keyboard::Space);
+	}
+
+	/*---------------------------------------------------------------
+	IsDebug
+
+	summary:デバッグボタンを押したか
+	param  :なし(void)
+	return :押した(true)、押してない(false)
+	---------------------------------------------------------------*/
+	bool MyKeyboard::IsDebug()
+	{
+		return this->key_tracker_.IsKeyPressed(Keyboard::C);
+	}
+
+	/*---------------------------------------------------------------
+	MyKeyboard
+
+	summary:コンストラクタ
+	param  :なし(void)
+	return :存在しない
+	---------------------------------------------------------------*/
+	MyKeyboard::MyKeyboard()
+		:keyboard_(make_unique<Keyboard>())
+	{
+		this->Update();
 	}
 }
