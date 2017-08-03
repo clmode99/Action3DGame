@@ -127,7 +127,7 @@ void ActionGame::Render()
 	{
 		const wchar_t* FONT_FILE = L"Assets/azuki_14.spritefont";
 		auto font = make_unique<Font>(FONT_FILE);
-		font->SetPosition(400, 300);
+		font->SetPosition(350, 200);
 		font->Print(L"GAME CLEAR");
 	}
 

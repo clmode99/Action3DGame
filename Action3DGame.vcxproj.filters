@@ -72,6 +72,7 @@
     <ClInclude Include="CloverLib\Sprite2D.h">
       <Filter>CloverLib</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -114,10 +115,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="resource.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="directx.ico">
+    <Image Include="Assets\icon.ico">
       <Filter>Assets</Filter>
     </Image>
   </ItemGroup>
@@ -159,5 +157,8 @@
     <MeshContentTask Include="Assets\EnemySphere.FBX">
       <Filter>Assets\fbx</Filter>
     </MeshContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Action3DGame.rc" />
   </ItemGroup>
 </Project>

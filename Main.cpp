@@ -5,6 +5,7 @@
 #include <crtdbg.h>
 #include "pch.h"
 #include "Game/ActionGame.h"
+#include "resource.h"
 
 using namespace DirectX;
 
@@ -45,12 +46,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         wcex.cbClsExtra = 0;
         wcex.cbWndExtra = 0;
         wcex.hInstance = hInstance;
-        wcex.hIcon = LoadIcon(hInstance, L"IDI_ICON");
+        wcex.hIcon = LoadIcon(hInstance,(LPCWSTR)IDI_ICON1);
         wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
         wcex.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
         wcex.lpszMenuName = nullptr;
         wcex.lpszClassName = L"Action3DGameWindowClass";
-        wcex.hIconSm = LoadIcon(wcex.hInstance, L"IDI_ICON");
+        wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCWSTR)IDI_ICON1);
         if (!RegisterClassEx(&wcex))
             return 1;
 
@@ -66,7 +67,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
         AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
-        HWND hwnd = CreateWindowEx(0, L"Action3DGameWindowClass", L"3DÇ»Ç†Ç≠ÇµÇÂÇÒÇ∞Å[Çﬁ", WS_OVERLAPPEDWINDOW,
+        HWND hwnd = CreateWindowEx(0, L"Action3DGameWindowClass", L"3DÇ»Ç†Ç≠ÇµÇÂÇÒÇ∞Å[ÇﬁÇ›ÇΩÇ¢Ç»Ç‡ÇÃ", WS_OVERLAPPEDWINDOW,
             CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
             nullptr);
         // TODO: Change to CreateWindowEx(WS_EX_TOPMOST, L"Action3DGameWindowClass", L"Action3DGame", WS_POPUP,
